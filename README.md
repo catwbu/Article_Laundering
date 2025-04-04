@@ -1,4 +1,4 @@
-# 簡易文章洗稿工具 (Article Laundering)
+# 簡易文章洗稿工具 ( Article Spinner)
 
 ## 簡介
 
