@@ -1,7 +1,9 @@
 # 簡易文章洗稿工具 ( Article Spinner)
 
 ## 簡介
-
+您可以透過以下Colab筆記本直接使用本工具:
+- 初版: https://colab.research.google.com/drive/1O5DQT4_gSuBc3uh6tQHkYGnHv3sEzhP9
+  
 這是一個基於Python的文章洗稿工具，透過Word2Vec模型和中文分詞技術，能夠智慧替換文章中的關鍵字，產生相似但不完全相同的內容。該工具特別適用於內容創作者、SEO優化和文章改寫需求。
 ***此為期末專案，功能較不完善，僅做學術與娛樂用途。***
 
@@ -10,11 +12,6 @@
 本工具使用北醫大學 (TMU) 自然語言處理實驗室開發的「語詞等級之預訓練詞嵌入模型」:
 - 模型連結: [https://nlp.tmu.edu.tw/word2vec/index.html](https://nlp.tmu.edu.tw/word2vec/index.html)
 - 模型說明: 此模型針對中文語言最佳化，提供高品質的詞向量表示
-
-## Colab筆記本
-
-您可以透過以下Colab筆記本直接使用本工具:
-- 初版: https://colab.research.google.com/drive/1O5DQT4_gSuBc3uh6tQHkYGnHv3sEzhP9
 
 ## 功能特點
 
