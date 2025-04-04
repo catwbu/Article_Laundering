@@ -25,7 +25,7 @@ Colab:
 ## Colab筆記本
 
 您可以透過以下Colab筆記本直接使用本工具:
-- 初版: [https://colab.research.google.com/drive/1O5DQT4_gSuBc3uh6tQHkYGnHv3sEzhP9](https://colab.research.google.com/drive/1O5DQT4_gSuBc3uh6tQHk3uhn6t
+- 初版: https://colab.research.google.com/drive/1O5DQT4_gSuBc3uh6tQHkYGnHv3sEzhP9
 
 ## 功能特點
 
