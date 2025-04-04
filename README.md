@@ -7,7 +7,6 @@ https://nlp.tmu.edu.tw/word2vec/index.html
 
 Colab:
 (初版)https://colab.research.google.com/drive/1O5DQT4_gSuBc3uh6tQHkYGnHv3sEzhP9
-
 # 文章洗稿工具 (Article Laundering Tool)
 
 ![版本](https://img.shields.io/badge/版本-1.0.0-blue)
@@ -38,7 +37,7 @@ Colab:
 
 ## 安裝需求
 
-『`bash
+```bash
 pip install gensim
 pip install opencc-python-reimplemented
 pip install jieba
@@ -60,7 +59,7 @@ pip install jieba
 
 ## 使用範例
 
-『`python
+```python
 # 設定參數
 turnout = 0.7 # 詞語相似度閾值
 spread = 0.25 # 修改幅度
@@ -93,4 +92,5 @@ input2 = input('輸入文章內容:')
 
 ## 許可證
 
-本項目採用MIT許可證，詳情請參閱LICENSE文件。
+詳情請參閱LICENSE文件。
+
