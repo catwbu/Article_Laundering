@@ -16,9 +16,6 @@ import jieba.analyse
 import string
 import textwrap
 
-#from google.colab import drive
-#drive.mount('/content/drive/')
-
 from gensim.models.word2vec import Word2Vec
 model = gensim.models.KeyedVectors.load_word2vec_format('C:/Users/W7/Downloads/qqqq.model.bin', unicode_errors='ignore', binary=True)
 
