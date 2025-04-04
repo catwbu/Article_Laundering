@@ -9,9 +9,6 @@ Colab:
 (初版)https://colab.research.google.com/drive/1O5DQT4_gSuBc3uh6tQHkYGnHv3sEzhP9
 # 文章洗稿工具 (Article Laundering Tool)
 
-![版本](https://img.shields.io/badge/版本-1.0.0-blue)
-![許可證](https://img.shields.io/badge/許可證-MIT-green)
-
 ## 簡介
 
 這是一個基於Python的文章洗稿工具，透過Word2Vec模型和中文分詞技術，能夠智慧替換文章中的關鍵字，產生相似但不完全相同的內容。該工具特別適用於內容創作者、SEO優化和文章改寫需求。
