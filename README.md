@@ -1,4 +1,4 @@
-# 文章洗稿工具 (Article Laundering Tool)
+# 簡易文章洗稿工具 (Article Laundering)
 
 ## 簡介
 
