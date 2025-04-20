@@ -1,4 +1,4 @@
-# 簡易文章洗稿工具 ( Article Spinner)
+# 簡易文章洗稿工具 ( Article Spinner/Content_Laundering_Tool)
 
 ## 簡介
 您可以透過以下Colab筆記本直接使用本工具:
