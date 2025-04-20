@@ -17,7 +17,11 @@ import string
 import textwrap
 
 from gensim.models.word2vec import Word2Vec
-model = gensim.models.KeyedVectors.load_word2vec_format('C:/Users/W7/Downloads/qqqq.model.bin', unicode_errors='ignore', binary=True)
+import os
+#model = gensim.models.KeyedVectors.load_word2vec_format('C:/Users/W7/Downloads/qqqq.model.bin', unicode_errors='ignore', binary=True)
+
+model_path = os.path.join("model", "qqqq.model.bin")
+model = gensim.models.KeyedVectors.load_word2vec_format(model_path, unicode_errors='ignore', binary=True)
 
 #篩選門檻值
 turnout = 0.7

@@ -1,135 +1,148 @@
-import tkinter as tk
-from tkinter import scrolledtext
+print("載入套件中..")
+import wx
+import wx.richtext as rt
 import gensim
 from opencc import OpenCC
 import jieba
 import jieba.analyse
+import os
+
 import textwrap
 
-from gensim.models.word2vec import Word2Vec
-model = gensim.models.KeyedVectors.load_word2vec_format('C:/Users/W7/Downloads/qqqq.model.bin', unicode_errors='ignore', binary=True)
 
-#context=''
+# 載入模型
+print("載入模型中..")
+model_path = os.path.join("model", "qqqq.model.bin")
+model = gensim.models.KeyedVectors.load_word2vec_format(model_path, unicode_errors='ignore', binary=True)
+
+context = ''
+before = ''
+xxx = []
+last_output = ''
+is_highlighted = False  # 新增標記來跟踪當前是否處於高亮狀態
+
 def process_text(input_text, turnout, spread):
+    global context, before, xxx, is_highlighted
 
-    global context,before,xxx
-
-    input2=input_text
-
-    tag_pocket=[]
-    token_pocket=[]
-
-    context = input2
-    before = context
+    tag_pocket = []
+    context = input_text
+    before = input_text
 
     cc = OpenCC('tw2sp')
-    input2 = cc.convert(input2)
+    input2 = cc.convert(input_text)
 
-    keywords = jieba.analyse.extract_tags(input2, topK=int(len(input2)*spread) ,withWeight=True)
+    keywords = jieba.analyse.extract_tags(input2, topK=int(len(input2) * spread), withWeight=True)
 
-    for item,v in keywords:
+    for item, _ in keywords:
         cc = OpenCC('s2twp')
-        tag_master=cc.convert(item)
+        tag_master = cc.convert(item)
         tag_pocket.append(tag_master)
-        #print(tag_master)
-    print(tag_pocket)
-    xxx=[]
+        print(tag_master)
+
+    xxx = []
     for i in tag_pocket:
         try:
             lst = model.most_similar(i)
-            print(lst, lst[0][1])
         except Exception as e:
             lst = []
-            print(f"An error occurred: {e}")
         if lst and lst[0][1] > turnout:
-                xxx.append(lst[0][0])
-                print(str(lst[0][0]), str(lst[0][1]))
-                context = context.replace(i, str(lst[0][0]))
+            xxx.append(lst[0][0])
+            context = context.replace(i, str(lst[0][0]))
+            print(str(lst[0][0]),str(lst[0][1]))
+    is_highlighted = False  # 處理文本後重置
     return context
-    #result=context
-'''
 
-'''
+class WordReplacementApp(wx.Frame):
+    def __init__(self, parent, title):
 
+        super().__init__(parent, title=title, size=(800, 700))
+        #self.SetIcon(wx.Icon("icon.ico", wx.BITMAP_TYPE_ICO))
 
-class WordReplacementGUI:
-    def __init__(self, master):
-        self.master = master
-        master.title("文字替換程序")
+        panel = wx.Panel(self)
+        vbox = wx.BoxSizer(wx.VERTICAL)
 
-        # 輸入文本框
-        self.input_label = tk.Label(master, text="輸入文章內容:")
-        self.input_label.pack()
-        self.input_text = scrolledtext.ScrolledText(master, height=10)
-        self.input_text.pack()
+        # 輸入框
+        vbox.Add(wx.StaticText(panel, label="輸入文章內容："), flag=wx.LEFT | wx.TOP, border=10)
+        self.input_text = rt.RichTextCtrl(panel, style=wx.TE_MULTILINE)
+        vbox.Add(self.input_text, proportion=2, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
 
-        # 參數輸入
-        self.turnout_label = tk.Label(master, text="篩選門檻值:")
-        self.turnout_label.pack()
-        self.turnout_entry = tk.Entry(master)
-        self.turnout_entry.insert(0, "0.7")
-        self.turnout_entry.pack()
+        # 門檻與幅度參數
+        hbox_params = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_params.Add(wx.StaticText(panel, label="篩選門檻值："), flag=wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, border=5)
+        self.turnout = wx.TextCtrl(panel, value="0.7")
+        hbox_params.Add(self.turnout, flag=wx.RIGHT, border=20)
 
-        self.spread_label = tk.Label(master, text="修改幅度上限:")
-        self.spread_label.pack()
-        self.spread_entry = tk.Entry(master)
-        self.spread_entry.insert(0, "0.25")
-        self.spread_entry.pack()
+        hbox_params.Add(wx.StaticText(panel, label="修改幅度上限："), flag=wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, border=5)
+        self.spread = wx.TextCtrl(panel, value="0.25")
+        hbox_params.Add(self.spread)
 
-        #
-        self.button_frame = tk.Frame(master)
-        self.button_frame.pack()
+        vbox.Add(hbox_params, flag=wx.ALL, border=10)
 
-        '''
-        # 處理按鈕
-        self.process_button = tk.Button(master, text="處理文本", command=self.process)
-        self.process_button.pack()
-        '''
-        # 處理按鈕
-        self.process_button = tk.Button(self.button_frame, text="處理文本", command=self.process)
-        self.process_button.pack(side=tk.LEFT)
+        # 按鈕列
+        hbox_buttons = wx.BoxSizer(wx.HORIZONTAL)
+        self.process_btn = wx.Button(panel, label="處理文本", size=(120, 40))
+        self.compare_btn = wx.Button(panel, label="對比", size=(120, 40))
+        self.clear_btn = wx.Button(panel, label="清空輸出", size=(120, 40))
 
-        # 對比按鈕
-        self.compare_button = tk.Button(self.button_frame, text="對比", command=self.compare)
-        self.compare_button.pack(side=tk.LEFT)
+        hbox_buttons.Add(self.process_btn, flag=wx.RIGHT, border=10)
+        hbox_buttons.Add(self.compare_btn, flag=wx.RIGHT, border=10)
+        hbox_buttons.Add(self.clear_btn)
 
-        # 輸出文本框
-        self.output_label = tk.Label(master, text="處理結果:")
-        self.output_label.pack()
-        self.output_text = scrolledtext.ScrolledText(master, height=10)
-        self.output_text.pack()
+        vbox.Add(hbox_buttons, flag=wx.ALIGN_CENTER | wx.BOTTOM, border=10)
 
-    def process(self):
-        input_text = self.input_text.get("1.0", tk.END).strip()
-        turnout = float(self.turnout_entry.get())
-        spread = float(self.spread_entry.get())
+        # 輸出區
+        vbox.Add(wx.StaticText(panel, label="處理結果："), flag=wx.LEFT, border=10)
+        self.output_text = rt.RichTextCtrl(panel, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        vbox.Add(self.output_text, proportion=2, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
 
+        # 綁定事件
+        self.process_btn.Bind(wx.EVT_BUTTON, self.on_process)
+        self.compare_btn.Bind(wx.EVT_BUTTON, self.on_compare)
+        self.clear_btn.Bind(wx.EVT_BUTTON, self.on_clear)
+
+        panel.SetSizer(vbox)
+        self.Centre()
+        self.Show()
+
+    def on_process(self, event):
+        global last_output, is_highlighted
+        input_text = self.input_text.GetValue()
         try:
+            turnout = float(self.turnout.GetValue())
+            spread = float(self.spread.GetValue())
+
             result = process_text(input_text, turnout, spread)
-            self.output_text.delete("1.0", tk.END)
-            self.output_text.insert(tk.END, result)
+            last_output = result
+            self.output_text.SetValue(result)
+            is_highlighted = False  # 處理文本後重置高亮狀態
         except Exception as e:
-            self.output_text.delete("1.0", tk.END)
-            self.output_text.insert(tk.END, f"處理過程中發生錯誤：{str(e)}")
+            self.output_text.SetValue(f"處理過程中發生錯誤：{str(e)}")
 
-    def compare(self):
-        global context,before,xxx
-        if context:
-            print()
-            print('before:\n'+'\n'.join(textwrap.wrap(before,width=150))+'\n'+'\nafter:\n'+'\n'.join(textwrap.wrap(context,width=250)))
+    def on_compare(self, event):
+        global context, before, xxx, last_output, is_highlighted
 
-            for i in set(xxx):
-                context=context.replace(i, '['+i+']')
-                print('before:\n'+'\n'.join(textwrap.wrap(before,width=150))+'\n'+'\nafter:\n'+'\n'.join(textwrap.wrap(context,width=250)))
-                result = f"{textwrap.fill(context, width=250)}"
+        if not last_output:
+            self.output_text.SetValue("請先處理文本，然後再進行對比。")
+            return
 
-            self.output_text.delete("1.0", tk.END)
-            self.output_text.insert(tk.END, result)
+        if is_highlighted:
+            # 如果已經是高亮狀態，則恢復原始輸出
+            self.output_text.SetValue(last_output)
+            is_highlighted = False
         else:
-            self.output_text.delete("1.0", tk.END)
-            self.output_text.insert(tk.END, "請先處理文本，然後再進行對比。")
+            # 如果不是高亮狀態，則顯示高亮版本
+            highlighted = last_output
+            for word in set(xxx):
+                highlighted = highlighted.replace(word, f"[{word}]")
+            self.output_text.SetValue(highlighted)
+            is_highlighted = True
+
+    def on_clear(self, event):
+        global is_highlighted
+        self.output_text.SetValue("")
+        is_highlighted = False
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    gui = WordReplacementGUI(root)
-    root.mainloop()
+    app = wx.App(False)
+    WordReplacementApp(None, title="Article Laundering")
+    app.MainLoop()
